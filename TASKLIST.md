@@ -21,10 +21,10 @@ This phase involves gathering the raw materials (datasets) required for the fram
 ## Phase 3: Data Processing & Standardization (25% - 40%)
 This is a critical phase where messy raw data is converted into a structured, unified format.
 
-- [ ] **Data Cleaning:** Write functions in `src/data_processing/` to handle missing values, remove HTML tags, and normalize text encodings.
-- [ ] **Schema Mapping:** Map the disparate columns from the three datasets to your unified **Metadata Schema** (`Prompt Text`, `Label`, `Source`, `Attack Type`, etc.).
-- [ ] **Taxonomy Labeling:** Implement logic to classify and label prompts strictly according to your Attack Taxonomy (Benign, Prompt Injection, Jailbreak, Indirect PI, Prompt Leakage).
-- [ ] **Deduplication:** Implement rigorous exact-match and semantic (optional) deduplication to ensure there are no overlapping prompts, especially between training and assessment sets.
+- [x] **Data Cleaning:** Write functions in `src/data_processing/` to handle missing values, remove HTML tags, and normalize text encodings.
+- [x] **Schema Mapping:** Map the disparate columns from the three datasets to your unified **Metadata Schema** (`Prompt Text`, `Label`, `Source`, `Attack Type`, etc.).
+- [x] **Taxonomy Labeling:** Implement logic to classify and label prompts strictly according to your Attack Taxonomy (Benign, Prompt Injection, Jailbreak, Indirect PI, Prompt Leakage).
+- [x] **Deduplication:** Implement rigorous exact-match and semantic (optional) deduplication to ensure there are no overlapping prompts, especially between training and assessment sets.
 
 ## Phase 4: Dataset Generation & Validation (40% - 50%)
 The final phase of the first half results in the actual datasets that will power the rest of the project.
