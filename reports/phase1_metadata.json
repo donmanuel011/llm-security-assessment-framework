@@ -1,0 +1,217 @@
+{
+  "harmbench": {
+    "version": "official (harmbench-behaviors-text v1)",
+    "source_url": "https://github.com/centerforaisafety/HarmBench",
+    "paper": "https://arxiv.org/abs/2402.04249",
+    "local_dir": "D:\\llm-security-assessment-framework\\data\\raw\\HarmBench",
+    "files": [
+      "harmbench_behaviors_text_all.csv",
+      "harmbench_behaviors_text_test.csv",
+      "harmbench_behaviors_text_val.csv"
+    ],
+    "n_samples_all": 400,
+    "n_samples_test": 320,
+    "n_samples_val": 80,
+    "columns": [
+      "Behavior",
+      "FunctionalCategory",
+      "SemanticCategory",
+      "Tags",
+      "ContextString",
+      "BehaviorID"
+    ],
+    "functional_categories": {
+      "standard": 200,
+      "copyright": 100,
+      "contextual": 100
+    },
+    "semantic_categories": {
+      "copyright": 100,
+      "cybercrime_intrusion": 67,
+      "illegal": 65,
+      "misinformation_disinformation": 65,
+      "chemical_biological": 56,
+      "harassment_bullying": 25,
+      "harmful": 22
+    },
+    "null_prompts": 0,
+    "avg_prompt_length": 88.5,
+    "sha256_all": "8d81accedd38eaaf8b760618622bb888417d1fd0c86eba65c427a16f1cbb4afc",
+    "label": "all samples are harmful behaviors (jailbreak targets)",
+    "verified_at": "2026-09-06T08:04:51.412242+00:00"
+  },
+  "pibench": {
+    "version": "1.0.0",
+    "source_url": "https://github.com/PIBench/PIBench",
+    "local_dir": "D:\\llm-security-assessment-framework\\data\\raw\\pibench",
+    "n_total": 82,
+    "n_injections": 66,
+    "n_benign": 16,
+    "columns": [
+      "id",
+      "version",
+      "label",
+      "category",
+      "technique",
+      "severity",
+      "channel",
+      "text",
+      "source",
+      "notes"
+    ],
+    "label_column": "label",
+    "label_values": [
+      "injection",
+      "benign"
+    ],
+    "categories": {
+      "benign_control": 16,
+      "direct_override": 10,
+      "role_play_jailbreak": 8,
+      "indirect_injection": 8,
+      "encoding_obfuscation": 8,
+      "system_prompt_extraction": 7,
+      "context_manipulation": 6,
+      "multi_turn_escalation": 6,
+      "tool_hijack": 5,
+      "data_exfiltration": 4,
+      "translation_bypass": 4
+    },
+    "severity_counts": {
+      "medium": 34,
+      "high": 21,
+      "n/a": 16,
+      "low": 11
+    },
+    "sha256_full": "4c7fa29601db403f5976adef6a11c7fe6a2dab6e3b220b8c25dbaacdb4b1afef",
+    "sha256_match": true,
+    "verified_at": "2026-09-06T08:04:51.424532+00:00"
+  },
+  "tensor_trust": {
+    "version": "benchmarks v1 / raw data v2",
+    "source_url": "https://tensortrust.ai/paper",
+    "github": "https://github.com/HumanCompatibleAI/tensor-trust-data",
+    "paper": "https://arxiv.org/abs/2311.09384",
+    "local_dir": "D:\\llm-security-assessment-framework\\data\\raw\\tensor_trust",
+    "benchmarks": {
+      "hijacking_robustness": {
+        "file": "D:\\llm-security-assessment-framework\\data\\raw\\tensor_trust\\benchmarks\\hijacking-robustness\\v1\\hijacking_robustness_dataset.jsonl",
+        "n_samples": 776,
+        "columns": [
+          "sample_id",
+          "pre_prompt",
+          "access_code",
+          "post_prompt",
+          "attack"
+        ],
+        "label": "prompt_injection  (attack column is the adversarial input)",
+        "sha256": "d760db983a6f12f489ed16d920d072ad8563b523ffd0bdc7578e3c62d6ded600"
+      },
+      "extraction_robustness": {
+        "file": "D:\\llm-security-assessment-framework\\data\\raw\\tensor_trust\\benchmarks\\extraction-robustness\\v1\\extraction_robustness_dataset.jsonl",
+        "n_samples": 570,
+        "columns": [
+          "sample_id",
+          "pre_prompt",
+          "attack",
+          "post_prompt",
+          "access_code"
+        ],
+        "label": "prompt_leakage  (attack attempts to extract system prompt)",
+        "sha256": "3399d4c65defb3b9c450e277f229c01433b2820c8665a799cacb08182104a938"
+      }
+    },
+    "recommended_split": {
+      "training": "70%  of each benchmark",
+      "evaluation": "30%  reserved for known-attack test set"
+    },
+    "verified_at": "2026-09-06T08:04:51.451315+00:00"
+  },
+  "jailbreakbench": {
+    "version": "JBB-Behaviors v1.0 (HuggingFace)",
+    "source_url": "https://huggingface.co/datasets/JailbreakBench/JBB-Behaviors",
+    "paper": "https://arxiv.org/abs/2404.01318",
+    "local_dir": "D:\\llm-security-assessment-framework\\data\\raw\\jailbreakbench",
+    "files": {
+      "harmful-behaviors.csv": "D:\\llm-security-assessment-framework\\data\\raw\\jailbreakbench\\harmful-behaviors.csv",
+      "benign-behaviors.csv": "D:\\llm-security-assessment-framework\\data\\raw\\jailbreakbench\\benign-behaviors.csv",
+      "judge-comparison.csv": "D:\\llm-security-assessment-framework\\data\\raw\\jailbreakbench\\judge-comparison.csv"
+    },
+    "verified_at": "2026-09-06T08:04:51.452092+00:00",
+    "n_harmful": 100,
+    "harmful_columns": [
+      "Index",
+      "Goal",
+      "Target",
+      "Behavior",
+      "Category",
+      "Source"
+    ],
+    "sha256_harmful": "4a8ec6832056b631eb092dccc60d37a61c3d441268268888b3d006288afeffa1",
+    "harm_categories": {
+      "Harassment/Discrimination": 10,
+      "Malware/Hacking": 10,
+      "Physical harm": 10,
+      "Economic harm": 10,
+      "Fraud/Deception": 10,
+      "Disinformation": 10,
+      "Sexual/Adult content": 10,
+      "Privacy": 10,
+      "Expert advice": 10,
+      "Government decision-making": 10
+    },
+    "n_benign": 100,
+    "benign_columns": [
+      "Index",
+      "Goal",
+      "Target",
+      "Behavior",
+      "Category",
+      "Source"
+    ],
+    "sha256_benign": "3cda234d21a991fa309bbfea4b6d9dae31ccdf8e9d452424b6a983e4fdc33468"
+  },
+  "benign": {
+    "version": "1.0 (curated diverse)",
+    "source": "curated_synthetic — hand-crafted by category",
+    "local_dir": "D:\\llm-security-assessment-framework\\data\\raw\\benign",
+    "files": [
+      "benign_diverse.jsonl",
+      "benign_diverse.csv"
+    ],
+    "n_total": 120,
+    "category_counts": {
+      "general": 20,
+      "coding": 20,
+      "educational": 20,
+      "technical": 20,
+      "security_legitimate": 20,
+      "rag_legitimate": 20
+    },
+    "categories": [
+      "general",
+      "coding",
+      "educational",
+      "technical",
+      "security_legitimate",
+      "rag_legitimate"
+    ],
+    "label": "benign (all prompts)",
+    "diversity_note": "Covers general, coding, educational, technical, legitimate security, and RAG queries. Designed so that no prompt looks suspicious to a human reviewer.",
+    "sha256_jsonl": "b77655e0da12da862e9edcf4d076a2d965cef5ca1d53a9fd87d6e4ea06f49755",
+    "created_at": "2026-09-06T08:04:51.475717+00:00"
+  },
+  "phase1_summary": {
+    "completed_at": "2026-09-06T08:04:51.475815+00:00",
+    "datasets": {
+      "harmbench": 400,
+      "pibench": 82,
+      "tensor_trust_hijacking": 776,
+      "tensor_trust_extraction": 570,
+      "jailbreakbench_harmful": 100,
+      "jailbreakbench_benign": 100,
+      "benign_diverse": 120
+    },
+    "grand_total_raw_samples": 2148
+  }
+}
