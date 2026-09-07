@@ -169,37 +169,53 @@ llm-security-assessment-framework/
 
 ## 15. Usage
 
-*Detailed usage instructions will be updated as modules are developed.*
+The framework consists of a sequential execution pipeline divided into phases.
 
-**Basic Pipeline Execution (Conceptual):**
+**Basic Pipeline Execution:**
 
-1.  **Process Datasets:**
+1.  **Data Processing (Phases 1-12):**
+    The data pipeline cleans, dedups, and assigns taxonomies to the datasets, then splits them for model training and assessment.
     ```bash
-    python src/data_processing/build_datasets.py --config config/data_config.yaml
+    python src/data_processing/phase12_split.py
     ```
-2.  **Train Detector:**
+2.  **Dataset Analysis (Phase 11):**
+    Visualizations and metrics on the datasets are generated via the `notebooks/dataset_analysis.ipynb` and `reports/figures/`.
+3.  **Train Baseline Detectors (Phase 13):**
     ```bash
-    python src/models/train_detector.py --model microsoft/deberta-v3-base --data data/processed/detector_dataset.csv
+    python src/models/baseline_models.py
     ```
-3.  **Run LLM Security Assessment:**
+4.  **Train Final DeBERTa Detector (Phase 14 - Upcoming):**
     ```bash
-    python src/assessment/evaluate_llm.py --target_url [LLM_API_ENDPOINT] --dataset data/processed/assessment_dataset.csv
+    # (Command to be implemented)
     ```
-4.  **Launch Dashboard:**
+5.  **Run LLM Security Assessment (Upcoming):**
+    ```bash
+    # (Command to be implemented)
+    ```
+6.  **Launch Dashboard (Upcoming):**
     ```bash
     streamlit run app/main.py
     ```
 
-## 16. Expected Results
-*Note: These are placeholders and will be updated with actual experimental results as the project progresses.*
+## 16. Current Results
 
-*   **Detector Performance:**
-    *   Accuracy: `[Accuracy]%`
-    *   F1-Score: `[F1 Score]`
+*   **Dataset Overview:**
+    *   Unified dataset contains **1,984 samples**.
+    *   Classes: Jailbreak (810), Prompt Injection (511), Prompt Leakage (408), Benign (232), Indirect Prompt Injection (23).
+*   **Detector Performance (Baseline Binary Classification):**
+    Evaluating benign vs. attack samples on test splits.
+
+    | Model | Split | Accuracy | Precision | Recall | F1-Score |
+    | :--- | :--- | :--- | :--- | :--- | :--- |
+    | TF-IDF + Logistic Regression | Known Attacks | 95.1% | 94.9% | 100.0% | 97.4% |
+    | TF-IDF + Logistic Regression | Novel Attacks | 88.0% | 87.5% | 100.0% | 93.3% |
+    | TF-IDF + SVM | Known Attacks | 97.8% | 99.0% | 98.5% | 98.8% |
+    | TF-IDF + SVM | Novel Attacks | 96.0% | 95.5% | 100.0% | 97.7% |
+    | DistilBERT (Fine-tuned) | Known Attacks | 98.2% | 98.1% | 100.0% | 99.0% |
+    | DistilBERT (Fine-tuned) | Novel Attacks | 91.0% | 90.3% | 100.0% | 94.9% |
+
 *   **Assessment of Target LLM:**
-    *   Attack Success Rate: `[Attack Success Rate]%`
-    *   Refusal Rate: `[Refusal Rate]%`
-*   The framework is expected to demonstrate adaptability by evaluating how well the DeBERTa detector generalizes to modified or unseen attack patterns.
+    *   *(To be evaluated in later phases)*
 
 ## 17. Future Enhancements
 *   Integration with more comprehensive vulnerability databases (e.g., MITRE ATLAS).

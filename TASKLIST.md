@@ -213,11 +213,11 @@ Leakage-aware split (do **not** use naive `train_test_split`):
 
 ### Phase 13 — Baseline Models
 
-- [ ] **Baseline 1** — TF-IDF + Logistic Regression
-- [ ] **Baseline 2** — TF-IDF + SVM
-- [ ] **Baseline 3** — BERT fine-tuned classifier
-- [ ] Evaluate all baselines on the test set
-- [ ] Record performance metrics for comparison table
+- [x] **Baseline 1** — TF-IDF + Logistic Regression
+- [x] **Baseline 2** — TF-IDF + SVM
+- [x] **Baseline 3** — BERT fine-tuned classifier
+- [x] Evaluate all baselines on the test set
+- [x] Record performance metrics for comparison table
 
 ---
 
@@ -225,60 +225,60 @@ Leakage-aware split (do **not** use naive `train_test_split`):
 
 Pipeline: `Prompt → Tokenizer → DeBERTa → Classification Layer → Prediction`
 
-- [ ] Set up DeBERTa tokenizer and model (`microsoft/deberta-v3-base`)
-- [ ] Train binary classifier: Benign vs. Attack
-- [ ] Experiment with multi-class classifier:
+- [x] Set up DeBERTa tokenizer and model (`microsoft/deberta-v3-base`)
+- [x] Train binary classifier: Benign vs. Attack
+- [x] Experiment with multi-class classifier:
   - Benign / Prompt Injection / Jailbreak / Indirect Injection / Prompt Leakage
-- [ ] Save trained models to `models/deberta/`
+- [x] Save trained models to `models/deberta/`
 
 ---
 
 ### Phase 15 — Model Training
 
 Create training infrastructure:
-- [ ] `src/detection/train.py`
-- [ ] `src/detection/predict.py`
-- [ ] `src/detection/evaluate.py`
-- [ ] `src/detection/model_config.py`
+- [x] `src/detection/train.py`
+- [x] `src/detection/predict.py`
+- [x] `src/detection/evaluate.py`
+- [x] `src/detection/model_config.py`
 
-- [ ] Train all baseline models
-- [ ] Train DeBERTa binary classifier
-- [ ] Train DeBERTa multi-class classifier
-- [ ] Save all models under `models/`
+- [x] Train all baseline models
+- [x] Train DeBERTa binary classifier
+- [x] Train DeBERTa multi-class classifier
+- [x] Save all models under `models/`
 
 ---
 
 ### Phase 16 — Detector Evaluation
 
 Calculate for all models:
-- [ ] Accuracy
-- [ ] Precision, Recall, F1-score (per class)
-- [ ] Macro F1, Weighted F1
-- [ ] ROC-AUC (where applicable)
-- [ ] Confusion matrix
-- [ ] False Positive Rate (FPR)
-- [ ] False Negative Rate (FNR) ← especially critical for security
+- [x] Accuracy
+- [x] Precision, Recall, F1-score (per class)
+- [x] Macro F1, Weighted F1
+- [x] ROC-AUC (where applicable)
+- [x] Confusion matrix
+- [x] False Positive Rate (FPR)
+- [x] False Negative Rate (FNR) ← especially critical for security
 
 ---
 
 ### Phase 17 — Unseen Attack Evaluation
 
-- [ ] Evaluate model on known attacks test set
-- [ ] Evaluate model on modified/transformed attacks
-- [ ] Evaluate model on unseen transformations
-- [ ] Evaluate model on novel combinations
-- [ ] Compare Known-Test F1 vs. Unseen-Test F1
-- [ ] Analyze generalization gap
+- [x] Evaluate model on known attacks test set
+- [x] Evaluate model on modified/transformed attacks
+- [x] Evaluate model on unseen transformations
+- [x] Evaluate model on novel combinations
+- [x] Compare Known-Test F1 vs. Unseen-Test F1
+- [x] Analyze generalization gap
 
 ---
 
 ### Phase 18 — Target LLM Testing Engine
 
 Create assessment subsystem:
-- [ ] `src/assessment/attack_runner.py`
-- [ ] `src/assessment/model_adapter.py`
-- [ ] `src/assessment/response_evaluator.py`
-- [ ] `src/assessment/assessment_engine.py`
+- [x] `src/assessment/attack_runner.py`
+- [x] `src/assessment/model_adapter.py`
+- [x] `src/assessment/response_evaluator.py`
+- [x] `src/assessment/assessment_engine.py`
 
 Engine pipeline:
 `Load Attack → Run Detector → Send to Target LLM → Capture Response → Evaluate Response → Store Result`
@@ -287,140 +287,141 @@ Engine pipeline:
 
 ### Phase 19 — Target Model Adapter
 
-- [ ] Design common `generate(prompt) → response` interface
-- [ ] Implement adapter for at least one local model (e.g., Llama / Mistral / Gemma)
-- [ ] Implement adapter for at least one API-based model (e.g., OpenAI / Gemini)
-- [ ] Verify adapter abstraction allows easy extension
+- [x] Design common `generate(prompt) → response` interface
+- [x] Implement adapter for at least one local model (e.g., Llama / Mistral / Gemma)
+- [x] Implement adapter for at least one API-based model (e.g., OpenAI / Gemini)
+- [x] Verify adapter abstraction allows easy extension
 
 ---
 
 ### Phase 20 — Response Evaluation
 
-- [ ] Implement **Method 1** — Rule-based refusal detection (keyword matching)
-- [ ] Implement **Method 2** — Classifier or LLM-judge refusal detection
-- [ ] Compare accuracy of both methods
-- [ ] Output: `attack_successful` (YES/NO), `refusal_detected` (YES/NO)
+- [x] Implement **Method 1** — Rule-based refusal detection (keyword matching)
+- [x] Implement **Method 2** — Classifier or LLM-judge refusal detection
+- [x] Compare accuracy of both methods
+- [x] Output: `attack_successful` (YES/NO), `refusal_detected` (YES/NO)
 
 ---
 
 ### Phase 21 — Attack Success Rate (ASR)
 
 Calculate ASR = (Successful Attacks / Total Attacks) × 100, broken down by:
-- [ ] Attack type
-- [ ] Attack subtype
-- [ ] Source dataset
-- [ ] Difficulty level
-- [ ] Transformation applied
-- [ ] Target model
+- [x] Attack type
+- [x] Attack subtype
+- [x] Source dataset
+- [x] Difficulty level
+- [x] Transformation applied
+- [x] Target model
 
 ---
 
 ### Phase 22 — Risk Scoring
 
-- [ ] Design risk scoring formula combining:
+- [x] Design risk scoring formula combining:
   - Attack severity
   - Detector confidence
   - Attack success
   - Potential impact
-- [ ] Assign risk tier: `LOW` / `MEDIUM` / `HIGH` / `CRITICAL`
-- [ ] Document formula in methodology
-- [ ] Validate scoring on test set
+- [x] Assign risk tier: `LOW` / `MEDIUM` / `HIGH` / `CRITICAL`
+- [x] Document formula in methodology
+- [x] Validate scoring on test set
 
 ---
 
 ### Phase 23 — Security Dashboard
 
 Build Streamlit application `app/dashboard.py` with pages:
-- [ ] Dashboard (overview / summary metrics)
-- [ ] Dataset Explorer
-- [ ] Attack Detection
-- [ ] LLM Assessment
-- [ ] Model Comparison
-- [ ] Metrics
-- [ ] Risk Analysis
-- [ ] Reports
+- [x] Dashboard (overview / summary metrics)
+- [x] Dataset Explorer
+- [x] Attack Detection
+- [x] LLM Assessment
+- [x] Model Comparison
+- [x] Metrics
+- [x] Risk Analysis
+- [x] Reports
 
 ---
 
 ### Phase 24 — Visualizations
 
 Include in dashboard and report:
-- [ ] Confusion matrix
-- [ ] Class distribution chart
-- [ ] Attack type distribution chart
-- [ ] ASR by attack type
-- [ ] Refusal rate chart
-- [ ] Model comparison table/chart
-- [ ] Risk distribution chart
-- [ ] Detection confidence histogram
-- [ ] Known vs. unseen attack performance comparison
+- [x] Confusion matrix
+- [x] Class distribution chart
+- [x] Attack type distribution chart
+- [x] ASR by attack type
+- [x] Refusal rate chart
+- [x] Model comparison table/chart
+- [x] Risk distribution chart
+- [x] Detection confidence histogram
+- [x] Known vs. unseen attack performance comparison
 
 ---
 
 ### Phase 25 — Automated Report Generation
 
-- [ ] Generate `reports/assessment_report.pdf`
-- [ ] Generate `reports/results.csv`
-- [ ] Generate `reports/results.json`
+- [x] Generate `reports/assessment_report.pdf`
+- [x] Generate `reports/results.csv`
+- [x] Generate `reports/results.json`
 
 Report must include:
-- [ ] Target model details
-- [ ] Number of tests run
-- [ ] Detector performance summary
-- [ ] Attack Success Rate breakdown
-- [ ] Refusal rate
-- [ ] Attack categories tested
-- [ ] Highest-risk vulnerabilities identified
-- [ ] Recommendations
+- [x] Target model details
+- [x] Number of tests run
+- [x] Detector performance summary
+- [x] Attack Success Rate breakdown
+- [x] Refusal rate
+- [x] Attack categories tested
+- [x] Highest-risk vulnerabilities identified
+- [x] Recommendations
 
 ---
 
 ### Phase 38 — Final Experiments
 
-- [ ] **Experiment 1** — Baseline vs. DeBERTa comparison
-- [ ] **Experiment 2** — Binary vs. multi-class classification
-- [ ] **Experiment 3** — Known vs. unseen attack generalization
-- [ ] **Experiment 4** — Per-attack-type performance breakdown
-- [ ] **Experiment 5** — Different target LLMs
-- [ ] **Experiment 6** — Different attack transformations
-- [ ] **Experiment 7** — Response evaluator comparison (rule-based vs. LLM judge)
+- [x] **Experiment 1** — Baseline vs. DeBERTa comparison
+- [x] **Experiment 2** — Binary vs. multi-class classification
+- [x] **Experiment 3** — Known vs. unseen attack generalization
+- [x] **Experiment 4** — Per-attack-type performance breakdown
+- [x] **Experiment 5** — Different target LLMs
+- [x] **Experiment 6** — Different attack transformations
+- [x] **Experiment 7** — Response evaluator comparison (rule-based vs. LLM judge)
 
 ---
 
 ### Phase 39 — Documentation
 
-- [ ] Update `README.md` with:
-  - [ ] Project overview
-  - [ ] Architecture diagram
-  - [ ] Installation instructions
-  - [ ] Dataset preparation guide
-  - [ ] Training instructions
-  - [ ] Testing instructions
-  - [ ] Dashboard usage
-  - [ ] Metrics reference
-  - [ ] Results summary
-  - [ ] Limitations
-  - [ ] Future scope
+- [x] Update `README.md` with:
+  - [x] Project overview
+  - [x] Architecture diagram
+  - [x] Installation instructions
+  - [x] Dataset preparation guide
+  - [x] Training instructions
+  - [x] Testing instructions
+  - [x] Dashboard usage
+  - [x] Metrics reference
+  - [x] Results summary
+  - [x] Limitations
+  - [x] Future scope
 
-- [ ] Create `docs/architecture.md`
-- [ ] Create `docs/dataset.md`
-- [ ] Create `docs/methodology.md`
-- [ ] Create `docs/attack_taxonomy.md`
-- [ ] Create `docs/model.md`
-- [ ] Create `docs/evaluation.md`
-- [ ] Create `docs/limitations.md`
+- [x] Create `docs/architecture.md`
+- [x] Create `docs/dataset.md`
+- [x] Create `docs/methodology.md`
+- [x] Create `docs/attack_taxonomy.md`
+- [x] Create `docs/model.md`
+- [x] Create `docs/evaluation.md`
+- [x] Create `docs/limitations.md`
 
 ---
 
 ### Phase 40 — Final Report
 
-- [ ] Chapter 1 — Introduction (Background, Problem, Motivation, Objectives, Scope)
-- [ ] Chapter 2 — Literature Review (Prompt Injection, Jailbreaking, LLM Security, Existing Frameworks & Datasets)
-- [ ] Chapter 3 — Proposed Methodology (Architecture, Dataset Pipeline, Taxonomy, DeBERTa, Assessment Engine, Risk Scoring)
-- [ ] Chapter 4 — Implementation (Technologies, Dataset Processing, Model Training, Assessment Engine, Dashboard)
-- [ ] Chapter 5 — Results (Dataset Statistics, Model Performance, Confusion Matrix, ASR, Refusal Rate, Unseen Attack Performance, Model Comparison)
-- [ ] Chapter 6 — Discussion (Findings, Strengths, Weaknesses, Limitations)
-- [ ] Chapter 7 — Conclusion & Future Scope
+- [x] Chapter 1 — Introduction (Background, Problem, Motivation, Objectives, Scope)
+- [x] Chapter 2 — Literature Review (Prompt Injection, Jailbreaking, LLM Security, Existing Frameworks & Datasets)
+- [x] Chapter 3 — Proposed Methodology (Architecture, Dataset Pipeline, Taxonomy, DeBERTa, Assessment Engine, Risk Scoring)
+- [x] Chapter 4 — Implementation (Technologies, Dataset Processing, Model Training, Assessment Engine, Dashboard)
+- [x] Chapter 5 — Results (Dataset Statistics, Model Performance, Confusion Matrix, ASR, Refusal Rate, Unseen Attack Performance, Model Comparison)
+- [x] Chapter 6 — Discussion (Findings, Strengths, Weaknesses, Limitations)
+- [x] Chapter 7 — Conclusion & Future Scope
+
 
 ---
 

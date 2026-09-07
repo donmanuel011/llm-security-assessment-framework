@@ -1,0 +1,12 @@
+# Trained ML models and checkpoints
+models/
+
+# Model checkpoint files
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.ckpt
+
+# Hugging Face caches
+.cache/
