@@ -1,0 +1,11 @@
+pair,exact_overlaps,lexical_overlaps,semantic_overlaps,total_removed_from_lower_priority
+HarmBench <-> JailbreakBench,9,2,0,11
+HarmBench <-> PIBench,0,0,0,0
+HarmBench <-> TensorTrust,0,0,0,0
+HarmBench <-> Benign,0,0,0,0
+JailbreakBench <-> PIBench,0,0,0,0
+JailbreakBench <-> TensorTrust,0,0,0,0
+JailbreakBench <-> Benign,0,0,0,0
+PIBench <-> TensorTrust,0,0,0,0
+PIBench <-> Benign,1,1,0,2
+TensorTrust <-> Benign,0,0,0,0

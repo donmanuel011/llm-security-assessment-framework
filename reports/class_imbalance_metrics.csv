@@ -1,0 +1,6 @@
+unified_label,count,proportion_pct
+Jailbreak,810,40.83
+Prompt Injection,511,25.76
+Prompt Leakage,408,20.56
+Benign,232,11.69
+Indirect Prompt Injection,23,1.16

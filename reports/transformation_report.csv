@@ -1,0 +1,5 @@
+dataset,samples_selected,total_variants,transformations
+HarmBench,30,180,"original, paraphrased, obfuscated, role_based, contextual, multi_turn"
+JailbreakBench,30,180,"original, paraphrased, obfuscated, role_based, contextual, multi_turn"
+PIBench,30,180,"original, paraphrased, obfuscated, role_based, contextual, multi_turn"
+TensorTrust,30,180,"original, paraphrased, obfuscated, role_based, contextual, multi_turn"

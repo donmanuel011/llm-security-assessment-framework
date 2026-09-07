@@ -1,0 +1,6 @@
+dataset,Easy,Medium,Hard,Novel,total
+HarmBench,388,5,0,0,393
+JailbreakBench,187,0,0,0,187
+PIBench,69,13,0,0,82
+TensorTrust,386,215,3,0,604
+Benign,118,0,0,0,118

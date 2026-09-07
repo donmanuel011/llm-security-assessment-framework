@@ -1,0 +1,20 @@
+split,unified_label,count
+test_known,Benign,19
+test_known,Indirect Prompt Injection,1
+test_known,Jailbreak,100
+test_known,Prompt Injection,55
+test_known,Prompt Leakage,48
+test_novel,Benign,16
+test_novel,Jailbreak,29
+test_novel,Prompt Injection,23
+test_novel,Prompt Leakage,32
+train,Benign,162
+train,Indirect Prompt Injection,21
+train,Jailbreak,578
+train,Prompt Injection,364
+train,Prompt Leakage,268
+val,Benign,35
+val,Indirect Prompt Injection,1
+val,Jailbreak,103
+val,Prompt Injection,69
+val,Prompt Leakage,60

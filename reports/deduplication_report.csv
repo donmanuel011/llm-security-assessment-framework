@@ -1,0 +1,6 @@
+dataset,initial_rows,exact_removed,lexical_removed,semantic_removed,final_rows
+clean_harmbench.csv,400,7,0,0,393
+clean_pibench.csv,82,0,0,0,82
+clean_tensor_trust.csv,1346,420,211,111,604
+clean_jailbreakbench.csv,200,0,1,1,198
+clean_benign.csv,120,0,0,0,120

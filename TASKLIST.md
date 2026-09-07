@@ -94,120 +94,120 @@ Define common schema:
 - [x] Detect and handle NULL prompts
 - [x] Detect and handle empty/whitespace-only prompts
 - [x] Detect and handle invalid or missing labels
-- [ ] Detect and handle missing attack category fields
+- [x] Detect and handle missing attack category fields
 
 #### 4.2 Text Normalization
 - [x] Apply Unicode normalization
 - [x] Normalize whitespace
 - [x] Fix encoding problems / malformed records
-- [ ] Verify adversarial characteristics are preserved:
-  - [ ] Unusual capitalization retained
-  - [ ] Special characters retained
-  - [ ] Deliberate spacing retained
-  - [ ] Encoding/obfuscation retained
+- [x] Verify adversarial characteristics are preserved:
+  - [x] Unusual capitalization retained
+  - [x] Special characters retained
+  - [x] Deliberate spacing retained
+  - [x] Encoding/obfuscation retained
 
 ---
 
 ### Phase 5 — Deduplication (Within-Dataset)
 
 - [x] Implement exact duplicate detection via SHA-256(prompt)
-- [ ] Implement near-duplicate detection using TF-IDF + cosine similarity
-- [ ] Implement near-duplicate detection using sentence embeddings
-- [ ] Detect paraphrased variants of the same attack
-- [ ] Detect near-identical reformulations
-- [ ] Log and export deduplication report
+- [x] Implement near-duplicate detection using TF-IDF + cosine similarity
+- [x] Implement near-duplicate detection using sentence embeddings
+- [x] Detect paraphrased variants of the same attack
+- [x] Detect near-identical reformulations
+- [x] Log and export deduplication report
 
 ---
 
 ### Phase 6 — Cross-Dataset Deduplication
 
-- [ ] HarmBench ↔ PIBench deduplication
-- [ ] HarmBench ↔ Tensor Trust deduplication
-- [ ] HarmBench ↔ JailbreakBench deduplication
-- [ ] PIBench ↔ Tensor Trust deduplication
-- [ ] PIBench ↔ JailbreakBench deduplication
-- [ ] Tensor Trust ↔ JailbreakBench deduplication
-- [ ] Log cross-dataset overlap statistics
+- [x] HarmBench ↔ PIBench deduplication
+- [x] HarmBench ↔ Tensor Trust deduplication
+- [x] HarmBench ↔ JailbreakBench deduplication
+- [x] PIBench ↔ Tensor Trust deduplication
+- [x] PIBench ↔ JailbreakBench deduplication
+- [x] Tensor Trust ↔ JailbreakBench deduplication
+- [x] Log cross-dataset overlap statistics
 
 ---
 
 ### Phase 7 — Taxonomy Mapping
 
-- [ ] Create `src/data_processing/taxonomy_mapper.py`
-- [ ] Define unified taxonomy categories:
+- [x] Create `src/data_processing/taxonomy_mapper.py`
+- [x] Define unified taxonomy categories:
   - Benign
   - Prompt Injection
   - Indirect Prompt Injection
   - Jailbreak
   - Prompt Leakage
-- [ ] Map HarmBench categories → unified taxonomy
-- [ ] Map PIBench categories → unified taxonomy
-- [ ] Map Tensor Trust categories → unified taxonomy
-- [ ] Map JailbreakBench categories → unified taxonomy
+- [x] Map HarmBench categories → unified taxonomy
+- [x] Map PIBench categories → unified taxonomy
+- [x] Map Tensor Trust categories → unified taxonomy
+- [x] Map JailbreakBench categories → unified taxonomy
 
 ---
 
 ### Phase 8 — Difficulty Classification
 
 Assign difficulty (`Easy` / `Medium` / `Hard` / `Novel`) based on:
-- [ ] Obfuscation level
-- [ ] Structural complexity
-- [ ] Multi-step instruction chaining
-- [ ] Context dependency
-- [ ] Indirect delivery method
-- [ ] Multi-turn nature
-- [ ] Semantic subtlety
+- [x] Obfuscation level
+- [x] Structural complexity
+- [x] Multi-step instruction chaining
+- [x] Context dependency
+- [x] Indirect delivery method
+- [x] Multi-turn nature
+- [x] Semantic subtlety
 
 ---
 
 ### Phase 9 — Attack Transformation
 
 For selected attacks, create controlled variants:
-- [ ] Original (baseline)
-- [ ] Paraphrased
-- [ ] Obfuscated
-- [ ] Role-based framing
-- [ ] Contextual embedding
-- [ ] Multi-turn variant
+- [x] Original (baseline)
+- [x] Paraphrased
+- [x] Obfuscated
+- [x] Role-based framing
+- [x] Contextual embedding
+- [x] Multi-turn variant
 
-- [ ] Record `transformation` field (do **not** overwrite original)
+- [x] Record `transformation` field (do **not** overwrite original)
 
 ---
 
 ### Phase 10 — Unified Dataset
 
-- [ ] Generate `data/processed/unified_dataset.csv` (master dataset)
-- [ ] Generate `data/processed/detector_dataset.csv`
-- [ ] Generate `data/processed/assessment_dataset.csv`
+- [x] Generate `data/processed/unified_dataset.csv` (master dataset)
+- [x] Generate `data/processed/detector_dataset.csv`
+- [x] Generate `data/processed/assessment_dataset.csv`
 
 ---
 
 ### Phase 11 — Dataset Analysis
 
-- [ ] Create `notebooks/dataset_analysis.ipynb`
-- [ ] Analyze and visualize:
-  - [ ] Class distribution (Benign / Prompt Injection / Jailbreak / Indirect Injection / Prompt Leakage)
-  - [ ] Source distribution (HarmBench / PIBench / Tensor Trust / JailbreakBench / Custom)
-  - [ ] Attack type distribution
-  - [ ] Difficulty distribution
-  - [ ] Prompt length distribution
-  - [ ] Language distribution
-  - [ ] Duplicate rate
-  - [ ] Class imbalance metrics
-- [ ] Export graphs for final report
+- [x] Create `notebooks/dataset_analysis.ipynb`
+- [x] Analyze and visualize:
+  - [x] Class distribution (Benign / Prompt Injection / Jailbreak / Indirect Injection / Prompt Leakage)
+  - [x] Source distribution (HarmBench / PIBench / Tensor Trust / JailbreakBench / Custom)
+  - [x] Attack type distribution
+  - [x] Difficulty distribution
+  - [x] Prompt length distribution
+  - [x] Language distribution
+  - [x] Duplicate rate
+  - [x] Class imbalance metrics
+- [x] Export graphs for final report
 
 ---
 
 ### Phase 12 — Train/Test Split Strategy
 
 Leakage-aware split (do **not** use naive `train_test_split`):
-- [ ] Implement stratified split:
+- [x] Implement stratified split:
   - 70% Training
   - 15% Validation
   - 10% Known Attack Test
   - 5% Novel/Unseen Attack Test
-- [ ] Ensure near-duplicate variants are **not** split across train and test sets
-- [ ] Verify no label leakage between splits
+- [x] Ensure near-duplicate variants are **not** split across train and test sets
+- [x] Verify no label leakage between splits
 
 ---
 

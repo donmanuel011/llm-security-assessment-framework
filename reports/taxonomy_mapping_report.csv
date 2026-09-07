@@ -1,0 +1,6 @@
+dataset,Benign,Prompt Injection,Indirect Prompt Injection,Jailbreak,Prompt Leakage,total
+HarmBench,0,0,0,393,0,393
+JailbreakBench,98,0,0,89,0,187
+PIBench,16,43,8,8,7,82
+TensorTrust,0,278,0,0,326,604
+Benign,118,0,0,0,0,118
