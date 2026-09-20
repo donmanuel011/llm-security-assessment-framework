@@ -26,12 +26,14 @@ from src.detection.model_config import PROCESSED_DIR, REPORTS_DIR
 def run_security_assessment(
     detector_model_key: str = "tfidf_lr",
     target_model_type: str = "mock",
+    target_model_name: str = None,
     target_security_level: str = "medium",
     sample_size: int = 200
 ):
     print(f"\n{'='*60}")
     print(f"  RUNNING SECURITY ASSESSMENT ENGINE")
-    print(f"  Detector: {detector_model_key} | Target LLM: {target_model_type} ({target_security_level})")
+    model_label = target_model_name or target_model_type
+    print(f"  Detector: {detector_model_key} | Target LLM: {model_label} ({target_security_level})")
     print(f"{'='*60}")
 
     # 1. Load Attack Dataset
@@ -45,7 +47,7 @@ def run_security_assessment(
     if sample_size and sample_size < len(df):
         df = df.sample(n=sample_size, random_state=42).reset_index(drop=True)
 
-    adapter = get_adapter(model_type=target_model_type, security_level=target_security_level)
+    adapter = get_adapter(model_type=target_model_type, model_name=target_model_name, security_level=target_security_level)
 
     results = []
     for idx, row in df.iterrows():
@@ -108,4 +110,24 @@ def run_security_assessment(
     return res_df, overall_asr
 
 if __name__ == "__main__":
-    run_security_assessment("tfidf_lr", "mock", "medium", sample_size=50)
+    import argparse
+    parser = argparse.ArgumentParser(description="LLM Security Assessment Engine")
+    parser.add_argument("--target", type=str, default="mock", choices=["mock", "local", "api"],
+                        help="Target LLM type: mock | local (TinyLlama) | api (OpenAI)")
+    parser.add_argument("--model", type=str, default=None,
+                        help="Model name override (e.g. TinyLlama/TinyLlama-1.1B-Chat-v1.0)")
+    parser.add_argument("--security-level", type=str, default="medium", choices=["low", "medium", "high"],
+                        help="Security posture for mock adapter only")
+    parser.add_argument("--sample-size", type=int, default=50,
+                        help="Number of prompts to test (default: 50)")
+    parser.add_argument("--detector", type=str, default="tfidf_lr",
+                        help="Detector model to use: tfidf_lr | tfidf_svm")
+    args = parser.parse_args()
+
+    run_security_assessment(
+        detector_model_key=args.detector,
+        target_model_type=args.target,
+        target_model_name=args.model,
+        target_security_level=args.security_level,
+        sample_size=args.sample_size
+    )

@@ -131,14 +131,23 @@ def plot_prompt_length_distribution(df: pd.DataFrame):
     # Boxplot by class
     melted = df2[["unified_label", "prompt_length"]].copy()
     melted["prompt_length"] = melted["prompt_length"].clip(upper=1500)
-    labels = melted["unified_label"].unique()
+    labels = list(melted["unified_label"].unique())
     data_per_class = [melted[melted["unified_label"] == lbl]["prompt_length"].values for lbl in labels]
-    axes[1].boxplot(data_per_class, labels=labels, patch_artist=True,
-                    boxprops=dict(facecolor=PALETTE[1], color=PALETTE[0]),
-                    medianprops=dict(color="white", linewidth=2))
+    
+    # Matplotlib 3.9+ uses tick_labels instead of labels for boxplot
+    try:
+        axes[1].boxplot(data_per_class, tick_labels=labels, patch_artist=True,
+                        boxprops=dict(facecolor=PALETTE[1], color=PALETTE[0]),
+                        medianprops=dict(color="white", linewidth=2))
+    except TypeError:
+        axes[1].boxplot(data_per_class, labels=labels, patch_artist=True,
+                        boxprops=dict(facecolor=PALETTE[1], color=PALETTE[0]),
+                        medianprops=dict(color="white", linewidth=2))
+
     axes[1].set_title("Prompt Length by Class")
     axes[1].set_xlabel("Class")
     axes[1].set_ylabel("Character Length (capped at 1500)")
+    axes[1].set_xticks(range(1, len(labels) + 1))
     axes[1].set_xticklabels(labels, rotation=20, ha="right")
 
     save_fig("05_prompt_length_distribution.png")

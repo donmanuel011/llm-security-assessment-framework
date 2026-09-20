@@ -1,0 +1,4 @@
+subset,count,accuracy,precision,recall,f1_score
+Test Known (In-distribution),223,0.9462,0.9444,1.0,0.9714
+Test Novel (Unseen Attacks),100,0.86,0.8571,1.0,0.9231
+Generalization Gap (Known F1 - Novel F1),0,0.0,0.0,0.0,0.0483

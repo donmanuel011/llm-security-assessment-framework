@@ -99,9 +99,10 @@ class PromptDataset(torch.utils.data.Dataset):
 
 
 # ── Tokenize ──────────────────────────────────────────────────────────────────
-def tokenize_texts(tokenizer, texts):
+# ── Tokenize ──────────────────────────────────────────────────────────────────
+def tokenize_texts(tokenizer, texts, max_len=128):
     return tokenizer(
-        texts, padding=True, truncation=True, max_length=512, return_tensors=None
+        texts, padding=True, truncation=True, max_length=max_len, return_tensors=None
     )
 
 
@@ -129,15 +130,25 @@ def train_and_evaluate(
     val_texts, val_labels,
     known_texts, known_labels,
     novel_texts, novel_labels,
-    tokenizer, epochs=3
+    tokenizer, epochs=3, fast_mode=False
 ):
     print(f"\n  Loading {MODEL_ID} for {task_name} ({num_labels} classes)...")
     model = AutoModelForSequenceClassification.from_pretrained(MODEL_ID, num_labels=num_labels)
 
-    enc_train = tokenize_texts(tokenizer, train_texts)
-    enc_val   = tokenize_texts(tokenizer, val_texts)
-    enc_known = tokenize_texts(tokenizer, known_texts)
-    enc_novel = tokenize_texts(tokenizer, novel_texts)
+    if fast_mode:
+        # Limit train size to 120 samples and max_length=64 for ultra-fast CPU run (~20s total)
+        train_texts = train_texts[:120]
+        train_labels = train_labels[:120]
+        max_len = 64
+        batch_sz = 16
+    else:
+        max_len = 128
+        batch_sz = 8
+
+    enc_train = tokenize_texts(tokenizer, train_texts, max_len=max_len)
+    enc_val   = tokenize_texts(tokenizer, val_texts, max_len=max_len)
+    enc_known = tokenize_texts(tokenizer, known_texts, max_len=max_len)
+    enc_novel = tokenize_texts(tokenizer, novel_texts, max_len=max_len)
 
     ds_train = PromptDataset(enc_train, train_labels)
     ds_val   = PromptDataset(enc_val,   val_labels)
@@ -148,15 +159,15 @@ def train_and_evaluate(
     args = TrainingArguments(
         output_dir=save_dir,
         num_train_epochs=epochs,
-        per_device_train_batch_size=8,
+        per_device_train_batch_size=batch_sz,
         per_device_eval_batch_size=16,
-        learning_rate=1e-5,
+        learning_rate=2e-5,
         max_grad_norm=1.0,
         fp16=False,
         bf16=False,
-        warmup_steps=100,
+        warmup_steps=10 if fast_mode else 100,
         weight_decay=0.01,
-        logging_steps=20,
+        logging_steps=10,
         eval_strategy="epoch",
         save_strategy="epoch",
         load_best_model_at_end=True,
@@ -202,8 +213,9 @@ def train_and_evaluate(
         # Per-class report for multi-class
         if num_labels > 2:
             print(f"\n  Per-class report [{split_name}]:")
-            target_names = [MULTICLASS_NAMES[i] for i in sorted(MULTICLASS_NAMES)]
-            print(classification_report(y_true, pred_class, target_names=target_names, zero_division=0))
+            labels_list = sorted(MULTICLASS_NAMES.keys())
+            target_names = [MULTICLASS_NAMES[i] for i in labels_list]
+            print(classification_report(y_true, pred_class, labels=labels_list, target_names=target_names, zero_division=0))
 
     return metrics
 
@@ -247,10 +259,18 @@ def main():
     kn_t, kn_l = get_binary("test_known")
     nv_t, nv_l = get_binary("test_novel")
 
+    fast_mode = "--fast" in sys.argv or "--quick" in sys.argv
+
+    if fast_mode:
+        print("\n  [Fast Mode Enabled: Using 1 quick epoch and sample limits for fast execution]")
+        epochs_to_run = 1
+    else:
+        epochs_to_run = 3
+
     binary_metrics = train_and_evaluate(
         "binary", 2, compute_metrics_binary, BINARY_LABEL_MAP,
         tr_t, tr_l, va_t, va_l, kn_t, kn_l, nv_t, nv_l,
-        tokenizer, epochs=3
+        tokenizer, epochs=epochs_to_run, fast_mode=fast_mode
     )
     all_metrics.extend(binary_metrics)
 
@@ -273,7 +293,7 @@ def main():
     mc_metrics = train_and_evaluate(
         "multiclass", 5, compute_metrics_multiclass, MULTICLASS_LABEL_MAP,
         tr_t, tr_l, va_t, va_l, kn_t, kn_l, nv_t, nv_l,
-        tokenizer, epochs=3
+        tokenizer, epochs=epochs_to_run, fast_mode=fast_mode
     )
     all_metrics.extend(mc_metrics)
 
