@@ -65,3 +65,5 @@ xxhash==4.0.1
 yarl==1.24.5
 ftfy==6.3.1
 sentence-transformers==6.0.1
+streamlit
+groq
