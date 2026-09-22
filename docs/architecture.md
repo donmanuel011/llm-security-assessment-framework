@@ -3,7 +3,7 @@
 ## Overview
 The **LLM Security Assessment Framework** is an end-to-end security auditing and prompt defense platform designed to evaluate and harden Large Language Models against prompt injections, jailbreaks, and leakage attacks.
 
-![Architecture Diagram](architecture_diagram.png)
+![Architecture Diagram](architecture _diagram.png)
 
 ### Future State Architecture
 This diagram visualizes how the 🚀 **Future Scope** components will integrate into the existing framework to create a comprehensive enterprise security platform.
