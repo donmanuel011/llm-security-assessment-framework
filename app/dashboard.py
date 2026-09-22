@@ -118,23 +118,23 @@ elif page == "🔍 Dataset Explorer":
     st.write("Browse and filter the unified prompt security dataset.")
 
     if not split_df.empty:
-        source_filter = st.multiselect("Filter by Source Dataset:", options=split_df["source_dataset"].unique(), default=split_df["source_dataset"].unique())
+        source_filter = st.multiselect("Filter by Source Dataset:", options=split_df["source"].unique(), default=split_df["source"].unique())
         label_filter  = st.multiselect("Filter by Label:", options=split_df["label"].unique(), default=split_df["label"].unique())
 
         filtered_df = split_df[
-            (split_df["source_dataset"].isin(source_filter)) &
+            (split_df["source"].isin(source_filter)) &
             (split_df["label"].isin(label_filter))
         ]
 
         st.write(f"Showing **{len(filtered_df):,}** prompts matching filters:")
-        st.dataframe(filtered_df[["prompt_id", "prompt", "label", "unified_label", "source_dataset", "split"]].head(100), use_container_width=True)
+        st.dataframe(filtered_df[["sample_id", "prompt", "label", "unified_label", "source", "split"]].head(100), use_container_width=True)
 
         st.subheader("Label & Category Breakdown")
         col1, col2 = st.columns(2)
         with col1:
             st.bar_chart(filtered_df["unified_label"].value_counts())
         with col2:
-            st.bar_chart(filtered_df["source_dataset"].value_counts())
+            st.bar_chart(filtered_df["source"].value_counts())
 
 # ── 3. Live Attack Detector ─────────────────────────────────────────────────
 elif page == "🎯 Live Attack Detector":

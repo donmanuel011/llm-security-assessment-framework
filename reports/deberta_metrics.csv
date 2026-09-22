@@ -1,5 +1,5 @@
 model,split,accuracy,precision,recall,f1_score
-DeBERTa (binary),test_known,0.0852,0.0,0.0,0.0
-DeBERTa (binary),test_novel,0.16,0.0,0.0,0.0
+DeBERTa (binary),test_known,0.9148,0.9148,1.0,0.9555
+DeBERTa (binary),test_novel,0.84,0.84,1.0,0.913
 DeBERTa (multiclass),test_known,0.4484,0.0897,0.2,0.1238
 DeBERTa (multiclass),test_novel,0.29,0.0725,0.25,0.1124
