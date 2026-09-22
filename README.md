@@ -121,18 +121,21 @@ The framework evaluates both the prompt detector and the target LLM application.
 ## 12. Project Structure
 ```text
 llm-security-assessment-framework/
-├── data/
+├── app/                     # Streamlit dashboard application
+├── configs/                 # Configuration files for models and paths
+├── data/                    
 │   ├── raw/                 # Raw datasets (HarmBench, PIBench, etc.)
-│   ├── processed/           # detector_dataset.csv, assessment_dataset.csv
-│   └── interim/             # Intermediate processing files
+│   └── processed/           # detector_dataset.csv, assessment_dataset.csv
+├── docs/                    # Architecture, methodology, and references
+├── models/                  # Saved weights for fine-tuned detectors (DeBERTa)
+├── notebooks/               # Jupyter notebooks for EDA and prototyping
+├── reports/                 # Generated security reports and visualizations
 ├── src/
 │   ├── data_processing/     # Scripts for cleaning, deduplication, labeling
-│   ├── models/              # DeBERTa model training and evaluation scripts
-│   ├── assessment/          # Automated LLM testing and response evaluation
-│   └── utils/               # Helper functions
-├── notebooks/               # Jupyter notebooks for EDA and prototyping
-├── app/                     # Streamlit dashboard application
-├── reports/                 # Generated security reports and visualizations
+│   ├── models/              # Model training and evaluation scripts
+│   └── assessment/          # Automated LLM testing and response evaluation
+├── tests/                   # Unit and integration tests
+├── scan.py                  # Main CLI entry point for the security scanner
 ├── requirements.txt         # Project dependencies
 └── README.md                # Project documentation
 ```
@@ -184,17 +187,18 @@ The framework consists of a sequential execution pipeline divided into phases.
     ```bash
     python src/models/baseline_models.py
     ```
-4.  **Train Final DeBERTa Detector (Phase 14 - Upcoming):**
+4.  **Train Final DeBERTa Detector (Phase 14):**
     ```bash
-    # (Command to be implemented)
+    python src/models/deberta_detector.py --fast
     ```
-5.  **Run LLM Security Assessment (Upcoming):**
+5.  **Run LLM Security Assessment:**
+    Evaluate a target LLM using the trained DeBERTa detector.
     ```bash
-    # (Command to be implemented)
+    python scan.py -d deberta_binary -s high
     ```
-6.  **Launch Dashboard (Upcoming):**
+6.  **Launch Dashboard:**
     ```bash
-    streamlit run app/main.py
+    streamlit run app/dashboard.py
     ```
 
 ## 16. Current Results
@@ -213,9 +217,11 @@ The framework consists of a sequential execution pipeline divided into phases.
     | TF-IDF + SVM | Novel Attacks | 96.0% | 95.5% | 100.0% | 97.7% |
     | DistilBERT (Fine-tuned) | Known Attacks | 98.2% | 98.1% | 100.0% | 99.0% |
     | DistilBERT (Fine-tuned) | Novel Attacks | 91.0% | 90.3% | 100.0% | 94.9% |
+    | DeBERTa-v3 (Fast Fine-tune) | Known Attacks | 91.4% | - | - | 95.5% |
+    | DeBERTa-v3 (Fast Fine-tune) | Novel Attacks | 84.0% | - | - | 91.3% |
 
 *   **Assessment of Target LLM:**
-    *   *(To be evaluated in later phases)*
+    *   The mock LLM evaluation using the fine-tuned DeBERTa detector achieved a 100% detection rate on high-security mode, effectively blocking all Jailbreak and Prompt Injection attempts (Resulting in an Attack Success Rate of 0.0%).
 
 ## 17. Future Enhancements
 *   Integration with more comprehensive vulnerability databases (e.g., MITRE ATLAS).

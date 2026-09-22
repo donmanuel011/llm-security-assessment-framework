@@ -68,8 +68,8 @@ Examples
     p.add_argument("-s", "--security-level", dest="security_level", default="medium",
                    choices=["low", "medium", "high"],
                    help="Mock LLM security posture: low | medium | high  (default: medium)")
-    p.add_argument("-d", "--detector", default="tfidf_lr", metavar="DETECTOR",
-                   help="Detector model key: tfidf_lr | tfidf_svm  (default: tfidf_lr)")
+    p.add_argument("-d", "--detector", default="deberta_binary", metavar="DETECTOR",
+                   help="Detector model key: tfidf_lr | tfidf_svm | deberta_binary | deberta_multiclass (default: deberta_binary)")
     p.add_argument("-k", "--api-key", dest="api_key", default=None, metavar="KEY",
                    help="API key for Groq/Gemini/OpenAI (or set GROQ_API_KEY / GEMINI_API_KEY / OPENAI_API_KEY)")
     return p
