@@ -58,9 +58,9 @@ Examples
   python scan.py --detector tfidf_svm
         """,
     )
-    p.add_argument("-t", "--target", default="mock",
-                   choices=["mock", "local", "api", "gemini", "groq"], metavar="TARGET",
-                   help="Target LLM: mock | local | api | gemini | groq  (default: mock)")
+    p.add_argument("-t", "--target", default="auto",
+                   choices=["auto", "mock", "local", "api", "gemini", "groq", "ollama", "custom"], metavar="TARGET",
+                   help="Target LLM: auto | mock | local | api | gemini | groq | ollama | custom  (default: auto)")
     p.add_argument("-m", "--model", default=None, metavar="MODEL",
                    help="Model name override (e.g. gemini-2.0-flash-lite, gpt-4o-mini)")
     p.add_argument("-n", "--num-prompts", dest="sample_size", type=int, default=20,
@@ -72,6 +72,10 @@ Examples
                    help="Detector model key: tfidf_lr | tfidf_svm | deberta_binary | deberta_multiclass (default: deberta_binary)")
     p.add_argument("-k", "--api-key", dest="api_key", default=None, metavar="KEY",
                    help="API key for Groq/Gemini/OpenAI (or set GROQ_API_KEY / GEMINI_API_KEY / OPENAI_API_KEY)")
+    p.add_argument("--api-base", dest="api_base", default=None, metavar="URL",
+                   help="Base URL for OpenAI-compatible APIs or Ollama (e.g. http://localhost:11434)")
+    p.add_argument("--custom-config", dest="custom_config", default=None, metavar="FILE",
+                   help="Path to JSON config file for custom REST API adapter")
     return p
 
 
@@ -94,6 +98,8 @@ def main():
         target_security_level=args.security_level,
         sample_size=args.sample_size,
         api_key=args.api_key,
+        api_base=args.api_base,
+        custom_config=args.custom_config,
     )
 
 

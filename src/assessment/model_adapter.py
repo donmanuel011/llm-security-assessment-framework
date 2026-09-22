@@ -7,6 +7,8 @@ from abc import ABC, abstractmethod
 import os
 import re
 import random
+import requests
+import json
 
 class BaseModelAdapter(ABC):
     """
@@ -98,19 +100,30 @@ class LocalTransformersAdapter(BaseModelAdapter):
 
 class APIModelAdapter(BaseModelAdapter):
     """
-    Adapter for OpenAI API-based models.
+    Adapter for OpenAI API-based models and OpenAI-compatible endpoints (vLLM, LM Studio, Together, DeepSeek).
     """
-    def __init__(self, model_name: str = "gpt-3.5-turbo", api_key: str = None):
-        super().__init__(model_name, {"api_key": api_key})
+    def __init__(self, model_name: str = "gpt-3.5-turbo", api_key: str = None, api_base: str = None):
+        super().__init__(model_name, {"api_key": api_key, "api_base": api_base})
         self.api_key = api_key or os.getenv("OPENAI_API_KEY")
+        self.api_base = api_base
 
     def generate(self, prompt: str) -> dict:
-        if not self.api_key:
+        if not self.api_key and not self.api_base:
             mock = MockLLMAdapter(model_name=f"API-{self.model_name} (Mock)", security_level="high")
             return mock.generate(prompt)
         try:
             import openai
-            client = openai.OpenAI(api_key=self.api_key)
+            
+            client_args = {}
+            if self.api_key:
+                client_args["api_key"] = self.api_key
+            else:
+                client_args["api_key"] = "not-needed" # Some local servers need a dummy key
+                
+            if self.api_base:
+                client_args["base_url"] = self.api_base
+                
+            client = openai.OpenAI(**client_args)
             resp = client.chat.completions.create(
                 model=self.model_name,
                 messages=[{"role": "user", "content": prompt}],
@@ -210,12 +223,120 @@ class GroqAdapter(BaseModelAdapter):
             return {"model_name": self.model_name, "response": f"Groq API Error: {e}", "status": "error"}
 
 
-def get_adapter(model_type: str = "mock", model_name: str = None,
-                security_level: str = "medium", api_key: str = None):
+class OllamaAdapter(BaseModelAdapter):
+    """
+    Adapter for locally hosted Ollama models.
+    """
+    def __init__(self, model_name: str = "llama3", api_base: str = "http://localhost:11434"):
+        super().__init__(model_name)
+        self.api_base = api_base.rstrip("/")
+
+    def generate(self, prompt: str) -> dict:
+        try:
+            url = f"{self.api_base}/api/generate"
+            payload = {
+                "model": self.model_name,
+                "prompt": prompt,
+                "stream": False,
+                "options": {"temperature": 0.0}
+            }
+            response = requests.post(url, json=payload, timeout=60)
+            response.raise_for_status()
+            response_text = response.json().get("response", "")
+            return {"model_name": self.model_name, "response": response_text, "status": "success"}
+        except Exception as e:
+            return {"model_name": self.model_name, "response": f"Ollama Error: {e}", "status": "error"}
+
+
+class CustomRESTAdapter(BaseModelAdapter):
+    """
+    Adapter for arbitrary REST APIs configured via JSON.
+    """
+    def __init__(self, model_name: str = "custom", config_path: str = None):
+        super().__init__(model_name)
+        self.config_path = config_path
+        self.custom_config = {}
+        if config_path and os.path.exists(config_path):
+            with open(config_path, 'r', encoding='utf-8') as f:
+                self.custom_config = json.load(f)
+
+    def generate(self, prompt: str) -> dict:
+        if not self.custom_config:
+            return {"model_name": self.model_name, "response": "[ERROR] No valid custom config provided.", "status": "error"}
+        
+        try:
+            url = self.custom_config.get("url")
+            headers = self.custom_config.get("headers", {})
+            payload_template = json.dumps(self.custom_config.get("payload", {}))
+            
+            # Inject prompt into template safely
+            escaped_prompt = json.dumps(prompt)[1:-1] # Remove surrounding quotes
+            payload_str = payload_template.replace("{{prompt}}", escaped_prompt)
+            payload = json.loads(payload_str)
+            
+            method = self.custom_config.get("method", "POST").upper()
+            
+            if method == "POST":
+                response = requests.post(url, headers=headers, json=payload, timeout=60)
+            else:
+                response = requests.get(url, headers=headers, params=payload, timeout=60)
+                
+            response.raise_for_status()
+            
+            # Extract response based on json_path
+            resp_json = response.json()
+            json_path = self.custom_config.get("response_json_path", "")
+            
+            if json_path:
+                keys = json_path.split(".")
+                extracted = resp_json
+                for k in keys:
+                    if isinstance(extracted, list):
+                        extracted = extracted[int(k)]
+                    else:
+                        extracted = extracted.get(k, {})
+                response_text = str(extracted)
+            else:
+                response_text = str(resp_json)
+                
+            return {"model_name": self.model_name, "response": response_text, "status": "success"}
+        except Exception as e:
+            return {"model_name": self.model_name, "response": f"Custom REST Error: {e}", "status": "error"}
+
+
+def _infer_adapter_type(model_name: str) -> str:
+    """Infer the correct adapter type based on the model name string."""
+    if not model_name:
+        return "mock"
+    
+    name_lower = model_name.lower()
+    
+    if "gemini" in name_lower:
+        return "gemini"
+    
+    if name_lower.startswith("gpt") or name_lower.startswith("o1") or name_lower.startswith("o3"):
+        return "api"
+        
+    groq_keywords = ["llama", "mixtral", "gemma", "qwen", "deepseek"]
+    if any(k in name_lower for k in groq_keywords):
+        # We don't auto-infer Ollama because it overlaps with Groq/Local models by name. 
+        # User should explicitly specify target=ollama.
+        if os.getenv("GROQ_API_KEY"):
+            return "groq"
+        return "local"
+        
+    return "mock"
+
+def get_adapter(model_type: str = "auto", model_name: str = None,
+                security_level: str = "medium", api_key: str = None,
+                api_base: str = None, custom_config: str = None):
     """
     Factory function to get model adapter by string type.
-    Supported types: mock | local | api | gemini | groq
+    Supported types: auto | mock | local | api | gemini | groq | ollama | custom
     """
+    if model_type == "auto" or not model_type:
+        model_type = _infer_adapter_type(model_name)
+
     if model_type == "mock":
         return MockLLMAdapter(model_name=model_name or "Mock-LLM-Standard", security_level=security_level)
     elif model_type == "local":
@@ -223,8 +344,13 @@ def get_adapter(model_type: str = "mock", model_name: str = None,
     elif model_type == "gemini":
         return GeminiAdapter(model_name=model_name or "gemini-2.0-flash-lite", api_key=api_key)
     elif model_type == "api":
-        return APIModelAdapter(model_name=model_name or "gpt-3.5-turbo", api_key=api_key)
+        return APIModelAdapter(model_name=model_name or "gpt-3.5-turbo", api_key=api_key, api_base=api_base)
     elif model_type == "groq":
         return GroqAdapter(model_name=model_name or "qwen/qwen3.8-27b", api_key=api_key)
+    elif model_type == "ollama":
+        base_url = api_base or "http://localhost:11434"
+        return OllamaAdapter(model_name=model_name or "llama3", api_base=base_url)
+    elif model_type == "custom":
+        return CustomRESTAdapter(model_name=model_name or "custom", config_path=custom_config)
     else:
         return MockLLMAdapter(model_name=model_name or "Mock-Default", security_level=security_level)

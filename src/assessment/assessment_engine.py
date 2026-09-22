@@ -21,6 +21,7 @@ from src.detection.predict import predict_prompt
 from src.assessment.model_adapter import get_adapter
 from src.assessment.response_evaluator import evaluate_target_response
 from src.assessment.risk_scoring import calculate_risk_score
+from src.assessment.preflight_scanner import PreflightScanner
 from src.detection.model_config import PROCESSED_DIR, REPORTS_DIR
 
 def run_security_assessment(
@@ -29,12 +30,14 @@ def run_security_assessment(
     target_model_name: str = None,
     target_security_level: str = "medium",
     sample_size: int = 200,
-    api_key: str = None
+    api_key: str = None,
+    api_base: str = None,
+    custom_config: str = None
 ):
     print(f"\n{'='*60}")
     print(f"  RUNNING SECURITY ASSESSMENT ENGINE")
     model_label = target_model_name or target_model_type
-    print(f"  Detector: {detector_model_key} | Target LLM: {model_label} ({target_security_level})")
+    print(f"  Detector: {detector_model_key} (+ Preflight) | Target LLM: {model_label} ({target_security_level})")
     print(f"{'='*60}")
 
     # 1. Load Attack Dataset
@@ -48,7 +51,8 @@ def run_security_assessment(
     if sample_size and sample_size < len(df):
         df = df.sample(n=sample_size, random_state=42).reset_index(drop=True)
 
-    adapter = get_adapter(model_type=target_model_type, model_name=target_model_name, security_level=target_security_level, api_key=api_key)
+    adapter = get_adapter(model_type=target_model_type, model_name=target_model_name, security_level=target_security_level, api_key=api_key, api_base=api_base, custom_config=custom_config)
+    preflight = PreflightScanner()
 
     results = []
     total_rows = len(df)
@@ -62,11 +66,21 @@ def run_security_assessment(
         attack_cat = row.get("unified_label", row.get("attack_type", "Unknown"))
         is_attack_prompt = (row.get("label", "malicious") == "malicious")
 
-        # Step 1: Run Security Detector
-        try:
-            det_res = predict_prompt(prompt, model_key=detector_model_key)
-        except Exception:
-            det_res = {"is_attack": False, "confidence": 0.5, "label": "benign"}
+        # Step 1: Run Preflight Heuristic Scanner (Early Detection)
+        preflight_res = preflight.scan(prompt)
+        
+        if preflight_res["flagged"]:
+            det_res = {
+                "is_attack": True, 
+                "confidence": 0.99, 
+                "label": preflight_res["reason"]
+            }
+        else:
+            # Step 1b: Run Heavy Security Detector if Preflight passes
+            try:
+                det_res = predict_prompt(prompt, model_key=detector_model_key)
+            except Exception:
+                det_res = {"is_attack": False, "confidence": 0.5, "label": "benign"}
 
         # Step 2: Send to Target LLM
         llm_out = adapter.generate(prompt)
@@ -161,18 +175,22 @@ def run_security_assessment(
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="LLM Security Assessment Engine")
-    parser.add_argument("--target", type=str, default="mock", choices=["mock", "local", "api", "gemini", "groq"],
-                        help="Target LLM type: mock | local (TinyLlama) | gemini | api (OpenAI) | groq (Llama 3.3)")
+    parser.add_argument("--target", type=str, default="mock", choices=["mock", "local", "api", "gemini", "groq", "ollama", "custom"],
+                        help="Target LLM type: mock | local | gemini | api | groq | ollama | custom")
     parser.add_argument("--model", type=str, default=None,
                         help="Model name override (e.g. gemini-1.5-flash, TinyLlama/TinyLlama-1.1B-Chat-v1.0)")
     parser.add_argument("--api-key", type=str, default=None,
                         help="API key (or set GEMINI_API_KEY / OPENAI_API_KEY env var)")
+    parser.add_argument("--api-base", type=str, default=None,
+                        help="Base URL for OpenAI-compatible APIs or Ollama (e.g. http://localhost:11434)")
+    parser.add_argument("--custom-config", type=str, default=None,
+                        help="Path to JSON config file for custom REST API adapter")
     parser.add_argument("--security-level", type=str, default="medium", choices=["low", "medium", "high"],
                         help="Security posture for mock adapter only")
     parser.add_argument("--sample-size", type=int, default=50,
                         help="Number of prompts to test (default: 50)")
     parser.add_argument("--detector", type=str, default="tfidf_lr",
-                        help="Detector model to use: tfidf_lr | tfidf_svm")
+                        help="Detector model to use: tfidf_lr | tfidf_svm | deberta_binary | deberta_multiclass")
     args = parser.parse_args()
 
     run_security_assessment(
@@ -181,5 +199,7 @@ if __name__ == "__main__":
         target_model_name=args.model,
         target_security_level=args.security_level,
         sample_size=args.sample_size,
-        api_key=args.api_key
+        api_key=args.api_key,
+        api_base=args.api_base,
+        custom_config=args.custom_config
     )

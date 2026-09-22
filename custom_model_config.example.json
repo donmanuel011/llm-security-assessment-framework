@@ -1,0 +1,17 @@
+{
+    "url": "https://api.example.com/v1/internal-model/generate",
+    "method": "POST",
+    "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer YOUR_TOKEN_HERE"
+    },
+    "payload": {
+        "model": "internal-sec-model-v2",
+        "messages": [
+            {"role": "user", "content": "{{prompt}}"}
+        ],
+        "temperature": 0.0,
+        "max_tokens": 256
+    },
+    "response_json_path": "choices.0.message.content"
+}
