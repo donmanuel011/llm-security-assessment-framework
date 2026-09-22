@@ -1,25 +1,21 @@
-﻿# Objectives
+# Objectives
 
-## 1. Dataset Creation and Preparation
+## 1. Adversarial Dataset & Taxonomy Alignment
+- Integrate established security benchmarks (HarmBench, PIBench, AgentPI) alongside benign conversational logs.
+- Align prompt datasets with expanded 2025/2026 adversarial taxonomies to address modern threats, specifically **Indirect Prompt Injections (IPI)** hidden in external documents.
+- Clean, normalize, deduplicate, and automatically score the difficulty of attacks.
 
-- Collect and integrate adversarial prompt data from established datasets such as HarmBench and PIBench along with benign prompts.
-- Clean, normalize, deduplicate, and categorize prompts according to defined attack types.
-- Develop a standardized dataset suitable for training and evaluating the AI-based detection model.
+## 2. External AI-Based Defense Mechanisms
+- Develop a robust external prompt classifier using sequence classification transformers (e.g., DeBERTa-v3).
+- **Research Alignment:** Recent 2026 literature proves that *external filtering architectures* are significantly more reliable than relying on an LLM for native self-protection.
+- Enable zero-shot detection to catch novel, unseen jailbreaks without relying on static attack templates.
 
-## 2. AI-Based Attack Detection
+## 3. Automated Agentic & LLM Assessment
+- Develop an automated execution framework to systematically "red-team" Target LLMs.
+- Expand assessment capabilities beyond static chat models to test **Agentic Workflows** (agents with tool/API access).
+- Evaluate Target LLM responses to determine whether an attack successfully breached the model's safety guardrails or was appropriately refused.
 
-- Develop an AI-based prompt classification model using transformer architectures such as BERT or DeBERTa.
-- Classify inputs into benign and adversarial categories such as prompt injection and jailbreak.
-- Evaluate the detector using accuracy, precision, recall, F1-score, and confusion matrix.
-
-## 3. Automated LLM Security Assessment
-
-- Develop an automated framework for testing LLMs using diverse adversarial prompts.
-- Evaluate model responses to determine whether attacks succeed or are appropriately refused.
-- Measure security performance across different attack categories and target LLMs.
-
-## 4. Risk Assessment and Reporting
-
-- Calculate security metrics including Attack Success Rate (ASR), refusal rate, and detection performance.
-- Develop a risk scoring mechanism to identify high-risk attack scenarios.
-- Generate security reports and visualizations highlighting vulnerabilities, model performance, and potential mitigation areas.
+## 4. Actionable Security Reporting
+- Calculate aggregate security metrics including Attack Success Rate (ASR), refusal rate, and detector F1-Score.
+- Develop a dynamic Risk Scoring mechanism to quantify vulnerabilities for security operations (SOC) teams.
+- Generate interactive visual reports that highlight exposure and guide enterprise mitigation strategies.

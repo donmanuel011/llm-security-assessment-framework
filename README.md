@@ -10,11 +10,11 @@ Large Language Models (LLMs) are increasingly integrated into critical applicati
 As LLM adoption grows, so does the risk of adversarial attacks designed to bypass safety guardrails, leak sensitive information, or hijack the model's intended behavior. Current assessment methodologies often lack comprehensive, standardized datasets and automated detection mechanisms capable of adapting to novel attack vectors. There is a critical need for a robust framework that can systematically evaluate LLM vulnerabilities and detect malicious prompts before they reach the model.
 
 ## 4. Objectives
-*   **Adversarial Dataset Curation:** Create a comprehensive and balanced dataset by integrating established benchmarks (HarmBench, PIBench) with benign prompts.
-*   **AI-Based Attack Detection:** Develop and evaluate a robust prompt detector using transformer models (e.g., DeBERTa) to classify inputs based on a defined attack taxonomy.
-*   **Automated LLM Assessment:** Implement a pipeline to systematically test LLM applications with adversarial prompts and evaluate their responses.
-*   **Robustness Evaluation:** Assess the generalization capability of the framework against known, modified, and potentially unseen attack patterns.
-*   **Actionable Reporting:** Generate automated security reports with key metrics and risk scoring to quantify identified vulnerabilities.
+*   **Adversarial Dataset & Taxonomy Alignment:** Create a comprehensive dataset by integrating benchmarks (HarmBench, PIBench) and align it with expanded adversarial taxonomies to address modern threats like Indirect Prompt Injections.
+*   **External AI-Based Defense Mechanisms:** Develop a robust external prompt detector using transformer models (e.g., DeBERTa-v3). Research from 2026 proves that external filtering architectures are significantly more reliable than relying on an LLM for native self-protection.
+*   **Automated Agentic & LLM Assessment:** Implement a pipeline to systematically red-team LLM applications and agentic workflows with adversarial prompts, evaluating their responses against zero-shot jailbreaks.
+*   **Robustness & Zero-Shot Evaluation:** Assess the generalization capability of the framework to detect novel, unseen attack patterns without relying on pre-existing attack templates.
+*   **Actionable Security Reporting:** Generate automated security reports with key metrics (Attack Success Rate, Refusal Rate) and risk scoring to quantify vulnerabilities for security operations teams.
 
 ## 5. Key Features
 *   **Unified Dataset Processing Pipeline:** Automated cleaning, normalization, deduplication, and taxonomy-based labeling of diverse prompt sources.
@@ -92,12 +92,12 @@ Both datasets incorporate the following metadata fields where applicable:
 `Sample ID`, `Prompt Text`, `Label` (Benign/Malicious), `Attack Type` (Taxonomy), `Subtype`, `Source` (e.g., HarmBench), `Difficulty/Severity`, `Language`, `Target Model`, `Model Response`, `Detector Prediction`, `Detector Confidence`, `Attack Success (Boolean)`, `Refusal (Boolean)`, `Risk Score`, `Evaluation Method`.
 
 ## 9. Methodology
-1.  **Data Ingestion & Integration:** Aggregate adversarial datasets (HarmBench, PIBench) and benign conversational datasets.
-2.  **Preprocessing & Labeling:** Cleanse the text data, remove duplicates, and map each prompt to the defined Attack Taxonomy.
-3.  **Detector Development:** Fine-tune a DeBERTa sequence classification model on `detector_dataset.csv` to distinguish between benign and various malicious prompt categories.
-4.  **Assessment Pipeline:** Feed prompts from `assessment_dataset.csv` into target LLM applications.
-5.  **Response Analysis:** Evaluate the LLM's output to determine if the attack was successful (e.g., the model complied with a jailbreak) or if the model safely refused the prompt.
-6.  **Reporting:** Calculate aggregate security metrics and generate comprehensive reports.
+1.  **Data Ingestion & Taxonomy Standardization:** Aggregate adversarial datasets (HarmBench, PIBench, OPTIMUS) and benign logs. Map these to an expanded, 5-class security taxonomy inspired by 2025/2026 adversarial benchmarks.
+2.  **Preprocessing & Feature Extraction:** Cleanse text data, remove duplicates, and perform automated difficulty scoring to account for obfuscated or multi-turn attacks.
+3.  **External Detector Development:** Fine-tune a DeBERTa-v3 sequence classification model on `detector_dataset.csv`. This model acts as a highly reliable external shield to distinguish between benign requests and complex malicious prompts (e.g., Indirect Prompt Injections) prior to target LLM execution.
+4.  **Automated Red-Teaming Assessment:** Feed evaluation prompts from `assessment_dataset.csv` into target LLMs and agentic workflows using adaptive abstraction layers (mock, local, and commercial API adapters).
+5.  **Heuristic Response Analysis:** Evaluate the LLM's output using rule-based and heuristic response evaluators to determine if the attack successfully breached the model's safety guardrails or if the model safely blocked the prompt.
+6.  **Continuous Security Reporting:** Calculate aggregate security metrics (e.g., ASR, F1-Score) and generate comprehensive, interactive Streamlit reports designed to integrate with enterprise security protocols.
 
 ## 10. Machine Learning Model
 *   **Architecture:** [DeBERTa](https://huggingface.co/docs/transformers/model_doc/deberta) (Decoding-enhanced BERT with disentangled attention).
