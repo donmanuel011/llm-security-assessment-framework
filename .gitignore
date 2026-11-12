@@ -10,3 +10,14 @@ models/
 
 # Hugging Face caches
 .cache/
+
+# Node.js
+node_modules/
+app/node_modules/
+package-lock.json
+app/package-lock.json
+
+# Python caches
+__pycache__/
+*.pyc
+

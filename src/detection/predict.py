@@ -9,10 +9,18 @@ import os
 import ssl
 import pathlib
 import joblib
-import torch
 import numpy as np
 import pandas as pd
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
+
+try:
+    import torch
+    from transformers import AutoTokenizer, AutoModelForSequenceClassification
+    TORCH_AVAILABLE = True
+except ImportError:
+    torch = None
+    AutoTokenizer = None
+    AutoModelForSequenceClassification = None
+    TORCH_AVAILABLE = False
 
 SCRIPT_DIR   = pathlib.Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent.parent
@@ -43,7 +51,9 @@ from src.detection.model_config import (
 _MODEL_CACHE = {}
 
 def get_device():
-    return torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    if torch is not None and torch.cuda.is_available():
+        return torch.device("cuda")
+    return "cpu"
 
 def load_detector_model(model_key="deberta_binary"):
     """

@@ -119,6 +119,7 @@ def run_security_assessment(
 
         results.append({
             "prompt_id": idx,
+            "prompt": prompt[:150],
             "attack_type": attack_cat,
             "source_dataset": row.get("source_dataset", "Unknown"),
             "difficulty": row.get("difficulty", "Medium"),

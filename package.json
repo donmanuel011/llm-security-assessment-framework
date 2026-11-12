@@ -1,0 +1,9 @@
+{
+  "name": "llm-security-assessment-framework",
+  "version": "1.0.0",
+  "description": "AI-Based Prompt Injection and Jailbreak Detection Framework",
+  "scripts": {
+    "start": "node app/server.js",
+    "dashboard": "node app/server.js"
+  }
+}
