@@ -356,3 +356,4 @@ app.listen(PORT, () => {
     console.log(`🛡️ LLM Security Dashboard Server running at http://localhost:${PORT}`);
     console.log(`Using Python binary: ${PYTHON_BIN}`);
 });
+
